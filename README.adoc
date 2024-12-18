@@ -1,0 +1,32 @@
+= Additional Redis for Spring Boot 3.4+
+
+This project demonstrate how to configure additional redis services without backing off Spring Boot auto-configured one.
+Thanks to https://github.com/spring-projects/spring-boot/commit/2ecb4ebd4947cfe3abd28d9a611186b680a59959.
+
+== Getting started
+
+Add your own redis configuration class to extend `RedisConfigurationSupport` which is a bridge to Spring Boot's `RedisAutoConfigration`.
+For example:
+[source,java]
+----
+include::src/test/java/com/example/FooRedisConfiguration.java[]
+----
+
+Then you can configure it as following:
+[source,yaml]
+----
+# primary redis service
+spring.data.redis:
+  host: 127.0.0.1
+  port: 6379
+  database: 0
+  client-name: default
+
+# additional foo redis service, inherit from primary properties
+foo.data.redis:
+  host: 127.0.0.1 # not required because it's equal to spring.data.redis.host
+  database: 1
+  client-name: foo
+----
+
+NOTE: Find and replace `foo` with your own prefix.
